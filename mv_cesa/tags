@@ -1,0 +1,411 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AESKEY0_0	mv_cesa.c	/^	AESKEY0_0,	\/* AES key MSW *\/$/;"	e	enum:__anon1	file:
+AESKEY0_1	mv_cesa.c	/^	AESKEY0_1,$/;"	e	enum:__anon1	file:
+AESKEY0_2	mv_cesa.c	/^	AESKEY0_2,$/;"	e	enum:__anon1	file:
+AESKEY0_3	mv_cesa.c	/^	AESKEY0_3,	\/* AES key LSW *\/$/;"	e	enum:__anon1	file:
+AESLENCR	mv_cesa.c	/^	AESLENCR,	\/* AES length & control register; BIT31 1=encrypt, 0=decrypt; BIT0-15 number of bytes to encrypt *\/$/;"	e	enum:__anon1	file:
+AES_CTRLA_REG	mv_cesa.h	171;"	d
+AES_CTRL_CBC	mv_cesa.h	179;"	d
+AES_CTRL_DCA	mv_cesa.h	177;"	d
+AES_CTRL_DECRYPT	mv_cesa.h	174;"	d
+AES_CTRL_ENCRYPT	mv_cesa.h	175;"	d
+AES_CTRL_SCA	mv_cesa.h	178;"	d
+AES_CTRL_START	mv_cesa.h	173;"	d
+AES_CTRL_WRKEY	mv_cesa.h	176;"	d
+AES_DIR_DECRYPT	mv_cesa.h	164;"	d
+AES_DIR_ENCRYPT	mv_cesa.h	165;"	d
+AES_DSTA_REG	mv_cesa.h	190;"	d
+AES_FLAGS_HIDDENKEY	mv_cesa.h	167;"	d
+AES_INTRA_PENDING	mv_cesa.h	183;"	d
+AES_INTRB_PENDING	mv_cesa.h	184;"	d
+AES_INTR_MASK	mv_cesa.h	187;"	d
+AES_INTR_PENDING	mv_cesa.h	186;"	d
+AES_INTR_REG	mv_cesa.h	181;"	d
+AES_IV_LENGTH	mv_cesa.h	157;"	d
+AES_KEY_LEN	mv_cesa.h	52;"	d
+AES_KEY_LENGTH	mv_cesa.h	158;"	d
+AES_LENA_REG	mv_cesa.h	191;"	d
+AES_MIN_BLOCK_SIZE	mv_cesa.h	159;"	d
+AES_MODE_CBC	mv_cesa.h	162;"	d
+AES_MODE_ECB	mv_cesa.h	161;"	d
+AES_OP_TIMEOUT	mv_cesa.h	199;"	d
+AES_SOURCEA_REG	mv_cesa.h	189;"	d
+AES_WRITEIV0_REG	mv_cesa.h	193;"	d
+AES_WRITEKEY0_REG	mv_cesa.h	192;"	d
+BUF_SIZE	mv_cesa.c	49;"	d	file:
+CFG_3DES_EDE	mv_cesa.h	73;"	d
+CFG_3DES_EEE	mv_cesa.h	72;"	d
+CFG_AES_LEN_128	mv_cesa.h	74;"	d
+CFG_AES_LEN_192	mv_cesa.h	75;"	d
+CFG_AES_LEN_256	mv_cesa.h	76;"	d
+CFG_DIR_DEC	mv_cesa.h	69;"	d
+CFG_DIR_ENC	mv_cesa.h	68;"	d
+CFG_ENCM_3DES	mv_cesa.h	66;"	d
+CFG_ENCM_AES	mv_cesa.h	67;"	d
+CFG_ENCM_DES	mv_cesa.h	65;"	d
+CFG_ENC_MODE_CBC	mv_cesa.h	71;"	d
+CFG_ENC_MODE_ECB	mv_cesa.h	70;"	d
+CFG_FIRST_FRAG	mv_cesa.h	78;"	d
+CFG_LAST_FRAG	mv_cesa.h	79;"	d
+CFG_MACM_HMAC_MD5	mv_cesa.h	63;"	d
+CFG_MACM_HMAC_SHA1	mv_cesa.h	64;"	d
+CFG_MACM_MD5	mv_cesa.h	61;"	d
+CFG_MACM_SHA1	mv_cesa.h	62;"	d
+CFG_MID_FRAG	mv_cesa.h	80;"	d
+CFG_NOT_FRAG	mv_cesa.h	77;"	d
+CFG_OP_CRYPT_MAC	mv_cesa.h	60;"	d
+CFG_OP_CRYPT_ONLY	mv_cesa.h	58;"	d
+CFG_OP_MAC_CRYPT	mv_cesa.h	59;"	d
+CFG_OP_MAC_ONLY	mv_cesa.h	57;"	d
+COP_AES_CBC	mv_cesa - Copy.c	/^	COP_AES_CBC,$/;"	e	enum:crypto_op	file:
+COP_AES_ECB	mv_cesa - Copy.c	/^	COP_AES_ECB,$/;"	e	enum:crypto_op	file:
+COP_AES_ECB	mv_cesa.c	/^	COP_AES_ECB,$/;"	e	enum:crypto_op	file:
+COP_HMAC_SHA1	mv_cesa - Copy.c	/^	COP_HMAC_SHA1$/;"	e	enum:hash_op	file:
+COP_SHA1	mv_cesa - Copy.c	/^	COP_SHA1,$/;"	e	enum:hash_op	file:
+DDMACR	mv_cesa.c	/^	DDMACR,		\/* DMA control register *\/$/;"	e	enum:__anon1	file:
+DES_CMD_REG	mv_cesa.h	8;"	d
+DIGEST_INITIAL_VAL_A	mv_cesa.h	3;"	d
+DIGEST_INITIAL_VAL_B	mv_cesa.h	4;"	d
+DIGEST_INITIAL_VAL_C	mv_cesa.h	5;"	d
+DIGEST_INITIAL_VAL_D	mv_cesa.h	6;"	d
+DIGEST_INITIAL_VAL_E	mv_cesa.h	7;"	d
+DLTRSSTAT	mv_cesa.c	/^	DLTRSSTAT,$/;"	e	enum:__anon1	file:
+DLWSTAT	mv_cesa.c	/^	DLWSTAT,$/;"	e	enum:__anon1	file:
+DMA_RD_NO_SNOOP	mv_cesa.c	59;"	d	file:
+DMA_RD_RELAX_ORDER	mv_cesa.c	58;"	d	file:
+DMA_READ_DONE	mv_cesa.c	61;"	d	file:
+DMA_READ_START	mv_cesa.c	57;"	d	file:
+DMA_REGISTER_SIZE	mv_cesa.c	30;"	d	file:
+DMA_RINTR_DISABLE	mv_cesa.c	60;"	d	file:
+DMA_WINTR_DISABLE	mv_cesa.c	54;"	d	file:
+DMA_WRITE_DONE	mv_cesa.c	55;"	d	file:
+DMA_WRITE_START	mv_cesa.c	51;"	d	file:
+DMA_WR_NO_SNOOP	mv_cesa.c	53;"	d	file:
+DMA_WR_RELAX_ORDER	mv_cesa.c	52;"	d	file:
+DMISCCONT	mv_cesa.c	/^	DMISCCONT,$/;"	e	enum:__anon1	file:
+DREGCOUNT	mv_cesa.c	/^	DREGCOUNT$/;"	e	enum:__anon1	file:
+DSCR	mv_cesa.c	/^	DSCR,		\/* Device control\/status register *\/$/;"	e	enum:__anon1	file:
+DSI_AES_ECB_ENABLE	mv_cesa.c	36;"	d	file:
+DSI_DMA_ENABLE	mv_cesa.c	34;"	d	file:
+DSI_HW_CRYPT_DEVICE_ID	mv_cesa.c	41;"	d	file:
+DSI_HW_CRYPT_SUBDEVICE_ID	mv_cesa.c	43;"	d	file:
+DSI_HW_CRYPT_SUBVENDOR_ID	mv_cesa.c	42;"	d	file:
+DSI_HW_CRYPT_VENDOR_ID	mv_cesa.c	40;"	d	file:
+DataPrepare	mv_cesa.c	/^static void DataPrepare(void)$/;"	f	file:
+Datasize	mv_cesa.c	/^int Datasize=0;$/;"	v
+ENC_IV_BUF_POINT	mv_cesa.h	94;"	d
+ENC_IV_POINT	mv_cesa.h	93;"	d
+ENC_KEY_P	mv_cesa.h	90;"	d
+ENC_LEN	mv_cesa.h	87;"	d
+ENC_P_DST	mv_cesa.h	84;"	d
+ENC_P_SRC	mv_cesa.h	83;"	d
+ENGINE_BUSY	mv_cesa - Copy.c	/^	ENGINE_BUSY,$/;"	e	enum:engine_status	file:
+ENGINE_BUSY	mv_cesa.c	/^	ENGINE_BUSY,$/;"	e	enum:engine_status	file:
+ENGINE_IDLE	mv_cesa - Copy.c	/^	ENGINE_IDLE,$/;"	e	enum:engine_status	file:
+ENGINE_IDLE	mv_cesa.c	/^	ENGINE_IDLE,$/;"	e	enum:engine_status	file:
+ENGINE_W_DEQUEUE	mv_cesa - Copy.c	/^	ENGINE_W_DEQUEUE,$/;"	e	enum:engine_status	file:
+ENGINE_W_DEQUEUE	mv_cesa.c	/^	ENGINE_W_DEQUEUE,$/;"	e	enum:engine_status	file:
+FPGA_INT_STATUS	mv_cesa.h	38;"	d
+HAVE_IRQ	mv_cesa.c	46;"	d	file:
+HAVE_KREG	mv_cesa.c	47;"	d	file:
+HAVE_REGION	mv_cesa.c	45;"	d	file:
+MAC_DIGEST_P	mv_cesa.h	101;"	d
+MAC_FRAG_LEN	mv_cesa.h	102;"	d
+MAC_INNER_IV_P	mv_cesa.h	104;"	d
+MAC_OUTER_IV_P	mv_cesa.h	105;"	d
+MAC_SRC_DATA_P	mv_cesa.h	97;"	d
+MAC_SRC_TOTAL_LEN	mv_cesa.h	98;"	d
+MAX_HW_HASH_SIZE	mv_cesa - Copy.c	25;"	d	file:
+MAX_HW_HASH_SIZE	mv_cesa.c	29;"	d	file:
+MV_CESA	mv_cesa - Copy.c	24;"	d	file:
+MV_CESA	mv_cesa.c	28;"	d	file:
+NRDCOMP	mv_cesa.c	/^	NRDCOMP,$/;"	e	enum:__anon1	file:
+RCOMPDSIZW	mv_cesa.c	/^	RCOMPDSIZW,$/;"	e	enum:__anon1	file:
+RDMAPERF	mv_cesa.c	/^	RDMAPERF,$/;"	e	enum:__anon1	file:
+RDMASTAT	mv_cesa.c	/^	RDMASTAT,$/;"	e	enum:__anon1	file:
+RDMATLPA	mv_cesa.c	/^	RDMATLPA,	\/* address of source data buffer (device perspective) *\/$/;"	e	enum:__anon1	file:
+RDMATLPC	mv_cesa.c	/^	RDMATLPC,$/;"	e	enum:__anon1	file:
+RDMATLPP	mv_cesa.c	/^	RDMATLPP,$/;"	e	enum:__anon1	file:
+RDMATLPS	mv_cesa.c	/^	RDMATLPS,$/;"	e	enum:__anon1	file:
+SEC_ACCEL_CFG	mv_cesa.h	21;"	d
+SEC_ACCEL_CMD	mv_cesa.h	10;"	d
+SEC_ACCEL_DESC_P0	mv_cesa.h	15;"	d
+SEC_ACCEL_DESC_P1	mv_cesa.h	18;"	d
+SEC_ACCEL_INT_MASK	mv_cesa.h	50;"	d
+SEC_ACCEL_INT_STATUS	mv_cesa.h	39;"	d
+SEC_ACCEL_STATUS	mv_cesa.h	28;"	d
+SEC_CFG_ACT_CH0_IDMA	mv_cesa.h	25;"	d
+SEC_CFG_ACT_CH1_IDMA	mv_cesa.h	26;"	d
+SEC_CFG_CH0_W_IDMA	mv_cesa.h	23;"	d
+SEC_CFG_CH1_W_IDMA	mv_cesa.h	24;"	d
+SEC_CFG_STOP_DIG_ERR	mv_cesa.h	22;"	d
+SEC_CMD_DISABLE_SEC	mv_cesa.h	13;"	d
+SEC_CMD_EN_SEC_ACCL0	mv_cesa.h	11;"	d
+SEC_CMD_EN_SEC_ACCL1	mv_cesa.h	12;"	d
+SEC_DESC_P0_PTR	mv_cesa.h	16;"	d
+SEC_DESC_P1_PTR	mv_cesa.h	19;"	d
+SEC_INT_ACC0_IDMA_DONE	mv_cesa.h	47;"	d
+SEC_INT_ACC1_IDMA_DONE	mv_cesa.h	48;"	d
+SEC_INT_ACCEL0_DONE	mv_cesa.h	45;"	d
+SEC_INT_ACCEL1_DONE	mv_cesa.h	46;"	d
+SEC_INT_AES_D_DONE	mv_cesa.h	43;"	d
+SEC_INT_AES_E_DONE	mv_cesa.h	42;"	d
+SEC_INT_AUTH_DONE	mv_cesa.h	40;"	d
+SEC_INT_DES_E_DONE	mv_cesa.h	41;"	d
+SEC_INT_ENC_DONE	mv_cesa.h	44;"	d
+SEC_ST_ACT_0	mv_cesa.h	29;"	d
+SEC_ST_ACT_1	mv_cesa.h	30;"	d
+SRAM_CFG_SPACE	mv_cesa.h	147;"	d
+SRAM_CONFIG	mv_cesa.h	136;"	d
+SRAM_DATA_IN_START	mv_cesa.h	140;"	d
+SRAM_DATA_IV	mv_cesa.h	138;"	d
+SRAM_DATA_IV_BUF	mv_cesa.h	139;"	d
+SRAM_DATA_KEY_P	mv_cesa.h	137;"	d
+SRAM_DATA_OUT_START	mv_cesa.h	141;"	d
+SRAM_DIGEST_BUF	mv_cesa.h	145;"	d
+SRAM_HMAC_IV_IN	mv_cesa.h	143;"	d
+SRAM_HMAC_IV_OUT	mv_cesa.h	144;"	d
+WDMAPERF	mv_cesa.c	/^	WDMAPERF,$/;"	e	enum:__anon1	file:
+WDMATLPA	mv_cesa.c	/^	WDMATLPA,	\/* address of destination data buffer (device perspective) *\/$/;"	e	enum:__anon1	file:
+WDMATLPC	mv_cesa.c	/^	WDMATLPC,$/;"	e	enum:__anon1	file:
+WDMATLPP	mv_cesa.c	/^	WDMATLPP,$/;"	e	enum:__anon1	file:
+WDMATLPS	mv_cesa.c	/^	WDMATLPS,$/;"	e	enum:__anon1	file:
+_readfield	mv_cesa.c	/^_readfield(u32 offset, void *value)$/;"	f	file:
+_writefield	mv_cesa.c	/^_writefield(u32 offset, void *value)$/;"	f	file:
+addr	mv_cesa.c	/^	unsigned long addr;$/;"	m	struct:dma_mem_struct	file:
+aes_dec_key	mv_cesa - Copy.c	/^	u32 aes_dec_key[8];$/;"	m	struct:mv_ctx	file:
+aes_dec_key	mv_cesa.c	/^	u32 aes_dec_key[8];$/;"	m	struct:mv_ctx	file:
+aes_decrypt_generic	aes_generic.c	/^EXPORT_SYMBOL_GPL(aes_decrypt_generic);$/;"	v
+aes_decrypt_generic	aes_generic.c	/^void aes_decrypt_generic(u8 *out, const u8 *in, int len)$/;"	f
+aes_enc_key	mv_cesa - Copy.c	/^	u8 aes_enc_key[AES_KEY_LEN];$/;"	m	struct:mv_ctx	file:
+aes_enc_key	mv_cesa.c	/^	u8 aes_enc_key[AES_KEY_LEN];$/;"	m	struct:mv_ctx	file:
+aes_encrypt_generic	aes_generic.c	/^EXPORT_SYMBOL_GPL(aes_encrypt_generic);$/;"	v
+aes_encrypt_generic	aes_generic.c	/^void aes_encrypt_generic(u8 *out, const u8 *in)$/;"	f
+base_hash	mv_cesa - Copy.c	/^	struct crypto_shash *base_hash;$/;"	m	struct:mv_tfm_hash_ctx	typeref:struct:mv_tfm_hash_ctx::crypto_shash	file:
+buffer	mv_cesa - Copy.c	/^	u8 buffer[SHA1_BLOCK_SIZE];$/;"	m	struct:mv_req_hash_ctx	file:
+byte	aes_generic.c	/^static inline u8 byte(const u32 x, const unsigned n)$/;"	f	file:
+complete	mv_cesa - Copy.c	/^	void (*complete) (void);$/;"	m	struct:req_progress	file:
+complete	mv_cesa.c	/^	void (*complete) (void);$/;"	m	struct:req_progress	file:
+compute_aes_dec_key	mv_cesa - Copy.c	/^static void compute_aes_dec_key(struct mv_ctx *ctx)$/;"	f	file:
+compute_aes_dec_key	mv_cesa.c	/^static void compute_aes_dec_key(struct mv_ctx *ctx)$/;"	f	file:
+config	mv_cesa.h	/^	u32 config;$/;"	m	struct:sec_accel_config
+copy_back	mv_cesa - Copy.c	/^	int copy_back;$/;"	m	struct:req_progress	file:
+copy_back	mv_cesa.c	/^	int copy_back;$/;"	m	struct:req_progress	file:
+copy_buf_to_dst	mv_cesa.c	/^static void copy_buf_to_dst(struct req_progress *p, char *sbuf, int len)$/;"	f	file:
+copy_src_to_buf	mv_cesa - Copy.c	/^static void copy_src_to_buf(struct req_progress *p, char *dbuf, int len)$/;"	f	file:
+copy_src_to_buf	mv_cesa.c	/^static void copy_src_to_buf(struct req_progress *p, char *dbuf, int len)$/;"	f	file:
+count	mv_cesa - Copy.c	/^	u64 count;$/;"	m	struct:mv_req_hash_ctx	file:
+count_add	mv_cesa - Copy.c	/^	int count_add;$/;"	m	struct:mv_req_hash_ctx	file:
+count_add	mv_cesa - Copy.c	/^	int count_add;$/;"	m	struct:mv_tfm_hash_ctx	file:
+count_sgs	mv_cesa - Copy.c	/^static int count_sgs(struct scatterlist *sl, unsigned int total_bytes)$/;"	f	file:
+count_sgs	mv_cesa.c	/^static int count_sgs(struct scatterlist *sl, unsigned int total_bytes)$/;"	f	file:
+counter	mv_cesa.c	/^int counter=0;$/;"	v
+cpg	mv_cesa - Copy.c	/^static struct crypto_priv *cpg;$/;"	v	typeref:struct:crypto_priv	file:
+cpg	mv_cesa.c	/^static struct crypto_priv *cpg;$/;"	v	typeref:struct:crypto_priv	file:
+crypt_len	mv_cesa - Copy.c	/^	int crypt_len;$/;"	m	struct:req_progress	file:
+crypt_len	mv_cesa.c	/^	int crypt_len;$/;"	m	struct:req_progress	file:
+crypto_aes_expand_key_generic	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_aes_expand_key_generic);$/;"	v
+crypto_aes_expand_key_generic	aes_generic.c	/^int crypto_aes_expand_key_generic(struct crypto_aes_ctx *ctx, const u8 *in_key,$/;"	f
+crypto_aes_set_key_generic	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_aes_set_key_generic);$/;"	v
+crypto_aes_set_key_generic	aes_generic.c	/^int crypto_aes_set_key_generic(const u8 *in_key,$/;"	f
+crypto_fl_tab_gen	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_fl_tab_gen);$/;"	v
+crypto_fl_tab_gen	aes_generic.c	/^const u32 crypto_fl_tab_gen[4][256] = {$/;"	v
+crypto_ft_tab_gen	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_ft_tab_gen);$/;"	v
+crypto_ft_tab_gen	aes_generic.c	/^const u32 crypto_ft_tab_gen[4][256] = {$/;"	v
+crypto_il_tab_gen	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_il_tab_gen);$/;"	v
+crypto_il_tab_gen	aes_generic.c	/^const u32 crypto_il_tab_gen[4][256] = {$/;"	v
+crypto_int	mv_cesa - Copy.c	/^irqreturn_t crypto_int(int irq, void *priv)$/;"	f
+crypto_it_tab_gen	aes_generic.c	/^EXPORT_SYMBOL_GPL(crypto_it_tab_gen);$/;"	v
+crypto_it_tab_gen	aes_generic.c	/^const u32 crypto_it_tab_gen[4][256] = {$/;"	v
+crypto_op	mv_cesa - Copy.c	/^enum crypto_op {$/;"	g	file:
+crypto_op	mv_cesa.c	/^enum crypto_op {$/;"	g	file:
+crypto_priv	mv_cesa - Copy.c	/^struct crypto_priv {$/;"	s	file:
+crypto_priv	mv_cesa.c	/^struct crypto_priv {$/;"	s	file:
+cur_req	mv_cesa - Copy.c	/^	struct crypto_async_request *cur_req;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::crypto_async_request	file:
+cur_req	mv_cesa.c	/^	struct crypto_async_request *cur_req;\/\/the cur_req is not being used.$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::crypto_async_request	file:
+dPointer	mv_cesa.c	/^unsigned char *dPointer;$/;"	v
+dataLength	mv_cesa.c	/^int dataLength[10];$/;"	v
+dcounter	mv_cesa.c	/^int dcounter=0;$/;"	v
+decrypt	mv_cesa - Copy.c	/^	int decrypt;$/;"	m	struct:mv_req_ctx	file:
+decrypt	mv_cesa.c	/^	int decrypt;$/;"	m	struct:mv_req_ctx	file:
+dequeue_complete_req	mv_cesa - Copy.c	/^static void dequeue_complete_req(void)$/;"	f	file:
+dequeue_complete_req	mv_cesa.c	/^static void dequeue_complete_req(void)$/;"	f	file:
+destBuf	mv_cesa.c	/^unsigned char destBuf[4096];$/;"	v
+dma_mem_struct	mv_cesa.c	/^dma_mem_struct$/;"	s	file:
+dma_mem_t	mv_cesa.c	/^}	dma_mem_t;$/;"	t	typeref:struct:dma_mem_struct	file:
+do_crypt	mv_cesa.c	/^static void do_crypt(void *src, void *dst, int len, u32 flags)\/\/one char by char$/;"	f	file:
+dsi_aes_dma	mv_cesa.c	/^static dma_mem_t dsi_aes_dma;$/;"	v	file:
+dsi_aes_driver	mv_cesa.c	/^static struct pci_driver dsi_aes_driver = {$/;"	v	typeref:struct:pci_driver	file:
+dsi_aes_probe	mv_cesa.c	/^dsi_aes_probe(struct pci_dev *dev, const struct pci_device_id *id)$/;"	f	file:
+dsi_aes_remove	mv_cesa.c	/^static void __devexit dsi_aes_remove(struct pci_dev *dev)$/;"	f	file:
+dsi_aes_tbl	mv_cesa.c	/^dsi_aes_tbl[] = $/;"	v	typeref:struct:pci_device_id	file:
+dsi_crypto_exit	mv_cesa.c	/^module_exit(dsi_crypto_exit);$/;"	v
+dsi_crypto_exit	mv_cesa.c	/^static void __exit dsi_crypto_exit(void)$/;"	f	file:
+dsi_crypto_init	mv_cesa.c	/^module_init(dsi_crypto_init);$/;"	v
+dsi_crypto_init	mv_cesa.c	/^static int __init dsi_crypto_init(void)$/;"	f	file:
+dst_sg_it	mv_cesa - Copy.c	/^	struct sg_mapping_iter dst_sg_it;$/;"	m	struct:req_progress	typeref:struct:req_progress::sg_mapping_iter	file:
+dst_sg_it	mv_cesa.c	/^	struct sg_mapping_iter dst_sg_it;$/;"	m	struct:req_progress	typeref:struct:req_progress::sg_mapping_iter	file:
+dst_start	mv_cesa - Copy.c	/^	int dst_start;$/;"	m	struct:req_progress	file:
+dst_start	mv_cesa.c	/^	int dst_start;$/;"	m	struct:req_progress	file:
+enc_iv	mv_cesa.h	/^	u32 enc_iv;$/;"	m	struct:sec_accel_config
+enc_key_p	mv_cesa.h	/^	u32 enc_key_p;$/;"	m	struct:sec_accel_config
+enc_len	mv_cesa.h	/^	u32 enc_len;$/;"	m	struct:sec_accel_config
+enc_p	mv_cesa.h	/^	u32 enc_p;$/;"	m	struct:sec_accel_config
+eng_st	mv_cesa - Copy.c	/^	enum engine_status eng_st;$/;"	m	struct:crypto_priv	typeref:enum:crypto_priv::engine_status	file:
+eng_st	mv_cesa.c	/^	enum engine_status eng_st;$/;"	m	struct:crypto_priv	typeref:enum:crypto_priv::engine_status	file:
+engine_status	mv_cesa - Copy.c	/^enum engine_status {$/;"	g	file:
+engine_status	mv_cesa.c	/^enum engine_status {$/;"	g	file:
+extra_bytes	mv_cesa - Copy.c	/^	int extra_bytes;	\/* unprocessed bytes in buffer *\/$/;"	m	struct:mv_req_hash_ctx	file:
+f_lround	aes_generic.c	1327;"	d	file:
+f_nround	aes_generic.c	1312;"	d	file:
+f_rl	aes_generic.c	1320;"	d	file:
+f_rn	aes_generic.c	1305;"	d	file:
+fallback	mv_cesa - Copy.c	/^	struct crypto_shash *fallback;$/;"	m	struct:mv_tfm_hash_ctx	typeref:struct:mv_tfm_hash_ctx::crypto_shash	file:
+first_hash	mv_cesa - Copy.c	/^	int first_hash;		\/* marks that we don't have previous state *\/$/;"	m	struct:mv_req_hash_ctx	file:
+forceProcess	mv_cesa.c	/^int forceProcess=0;$/;"	v
+get_data_out	mv_cesa.c	/^static void get_data_out(void)$/;"	f	file:
+global_ctx	aes_generic.c	/^static struct crypto_aes_ctx global_ctx;$/;"	v	typeref:struct:crypto_aes_ctx	file:
+global_flags	aes_generic.c	/^static u32 global_flags; $/;"	v	file:
+has_hmac_sha1	mv_cesa - Copy.c	/^	int has_hmac_sha1;$/;"	m	struct:crypto_priv	file:
+has_hmac_sha1	mv_cesa.c	/^	int has_hmac_sha1;$/;"	m	struct:crypto_priv	file:
+has_sha1	mv_cesa - Copy.c	/^	int has_sha1;$/;"	m	struct:crypto_priv	file:
+has_sha1	mv_cesa.c	/^	int has_sha1;$/;"	m	struct:crypto_priv	file:
+hash_op	mv_cesa - Copy.c	/^enum hash_op {$/;"	g	file:
+hw_nbytes	mv_cesa - Copy.c	/^	int hw_nbytes;$/;"	m	struct:req_progress	file:
+hw_nbytes	mv_cesa.c	/^	int hw_nbytes;\/\/total bytes to process in hw for this request$/;"	m	struct:req_progress	file:
+hw_processed_bytes	mv_cesa - Copy.c	/^	int hw_processed_bytes;$/;"	m	struct:req_progress	file:
+hw_processed_bytes	mv_cesa.c	/^	int hw_processed_bytes;\/\/number of bytes processed by hw (request).$/;"	m	struct:req_progress	file:
+i_lround	aes_generic.c	1400;"	d	file:
+i_nround	aes_generic.c	1385;"	d	file:
+i_rl	aes_generic.c	1393;"	d	file:
+i_rn	aes_generic.c	1378;"	d	file:
+imix_col	aes_generic.c	1130;"	d	file:
+irq	mv_cesa - Copy.c	/^	int irq;$/;"	m	struct:crypto_priv	file:
+irq	mv_cesa.c	/^	int irq;$/;"	m	struct:crypto_priv	file:
+ivs	mv_cesa - Copy.c	/^	u32 ivs[2 * SHA1_DIGEST_SIZE \/ 4];$/;"	m	struct:mv_tfm_hash_ctx	file:
+key_len	mv_cesa - Copy.c	/^	int key_len;$/;"	m	struct:mv_ctx	file:
+key_len	mv_cesa.c	/^	int key_len;$/;"	m	struct:mv_ctx	file:
+last_chunk	mv_cesa - Copy.c	/^	int last_chunk;		\/* marks that this is the 'final' request *\/$/;"	m	struct:mv_req_hash_ctx	file:
+lock	mv_cesa - Copy.c	/^	spinlock_t lock;$/;"	m	struct:crypto_priv	file:
+lock	mv_cesa.c	/^	spinlock_t lock;$/;"	m	struct:crypto_priv	file:
+lock	mv_cesa.c	/^static spinlock_t lock;$/;"	v	file:
+loop4	aes_generic.c	1147;"	d	file:
+loop6	aes_generic.c	1160;"	d	file:
+loop8	aes_generic.c	1190;"	d	file:
+loop8tophalf	aes_generic.c	1177;"	d	file:
+ls_box	aes_generic.c	1141;"	d	file:
+mac_digest	mv_cesa.h	/^	u32 mac_digest;$/;"	m	struct:sec_accel_config
+mac_iv	mv_cesa.h	/^	u32 mac_iv;$/;"	m	struct:sec_accel_config
+mac_src_p	mv_cesa.h	/^	u32 mac_src_p;$/;"	m	struct:sec_accel_config
+map	mv_cesa.c	/^	void __iomem  *map;$/;"	m	struct:dma_mem_struct	file:
+marvell_crypto	mv_cesa - Copy.c	/^static struct platform_driver marvell_crypto = {$/;"	v	typeref:struct:platform_driver	file:
+max_req_size	mv_cesa - Copy.c	/^	int max_req_size;$/;"	m	struct:crypto_priv	file:
+max_req_size	mv_cesa.c	/^	int max_req_size;$/;"	m	struct:crypto_priv	file:
+mv_aes_alg_cbc	mv_cesa - Copy.c	/^struct crypto_alg mv_aes_alg_cbc = {$/;"	v	typeref:struct:crypto_alg
+mv_aes_alg_ecb	mv_cesa - Copy.c	/^struct crypto_alg mv_aes_alg_ecb = {$/;"	v	typeref:struct:crypto_alg
+mv_aes_alg_ecb	mv_cesa.c	/^struct crypto_alg mv_aes_alg_ecb = {$/;"	v	typeref:struct:crypto_alg
+mv_cra_hash_exit	mv_cesa - Copy.c	/^static void mv_cra_hash_exit(struct crypto_tfm *tfm)$/;"	f	file:
+mv_cra_hash_hmac_sha1_init	mv_cesa - Copy.c	/^static int mv_cra_hash_hmac_sha1_init(struct crypto_tfm *tfm)$/;"	f	file:
+mv_cra_hash_init	mv_cesa - Copy.c	/^static int mv_cra_hash_init(struct crypto_tfm *tfm, const char *base_hash_name,$/;"	f	file:
+mv_cra_hash_sha1_init	mv_cesa - Copy.c	/^static int mv_cra_hash_sha1_init(struct crypto_tfm *tfm)$/;"	f	file:
+mv_cra_init	mv_cesa - Copy.c	/^static int mv_cra_init(struct crypto_tfm *tfm)$/;"	f	file:
+mv_cra_init	mv_cesa.c	/^static int mv_cra_init(struct crypto_tfm *tfm)$/;"	f	file:
+mv_crypto-objs	Makefile	/^mv_crypto-objs := mv_cesa.o aes_generic.o$/;"	m
+mv_crypto_algo_completion	mv_cesa - Copy.c	/^static void mv_crypto_algo_completion(void)$/;"	f	file:
+mv_crypto_algo_completion	mv_cesa.c	/^static void mv_crypto_algo_completion(void)$/;"	f	file:
+mv_crypto_exit	mv_cesa - Copy.c	/^module_exit(mv_crypto_exit);$/;"	v
+mv_crypto_exit	mv_cesa - Copy.c	/^static void __exit mv_crypto_exit(void)$/;"	f	file:
+mv_crypto_init	mv_cesa - Copy.c	/^module_init(mv_crypto_init);$/;"	v
+mv_crypto_init	mv_cesa - Copy.c	/^static int __init mv_crypto_init(void)$/;"	f	file:
+mv_ctx	mv_cesa - Copy.c	/^struct mv_ctx {$/;"	s	file:
+mv_ctx	mv_cesa.c	/^struct mv_ctx {$/;"	s	file:
+mv_dec_aes_cbc	mv_cesa - Copy.c	/^static int mv_dec_aes_cbc(struct ablkcipher_request *req)$/;"	f	file:
+mv_dec_aes_ecb	mv_cesa - Copy.c	/^static int mv_dec_aes_ecb(struct ablkcipher_request *req)$/;"	f	file:
+mv_dec_aes_ecb	mv_cesa.c	/^static int mv_dec_aes_ecb(struct ablkcipher_request *req)$/;"	f	file:
+mv_enc_aes_cbc	mv_cesa - Copy.c	/^static int mv_enc_aes_cbc(struct ablkcipher_request *req)$/;"	f	file:
+mv_enc_aes_ecb	mv_cesa - Copy.c	/^static int mv_enc_aes_ecb(struct ablkcipher_request *req)$/;"	f	file:
+mv_enc_aes_ecb	mv_cesa.c	/^static int mv_enc_aes_ecb(struct ablkcipher_request *req)$/;"	f	file:
+mv_handle_req	mv_cesa - Copy.c	/^static int mv_handle_req(struct crypto_async_request *req)$/;"	f	file:
+mv_handle_req	mv_cesa.c	/^static int mv_handle_req(struct crypto_async_request *req)$/;"	f	file:
+mv_hash_algo_completion	mv_cesa - Copy.c	/^static void mv_hash_algo_completion(void)$/;"	f	file:
+mv_hash_digest	mv_cesa - Copy.c	/^static int mv_hash_digest(struct ahash_request *req)$/;"	f	file:
+mv_hash_final	mv_cesa - Copy.c	/^static int mv_hash_final(struct ahash_request *req)$/;"	f	file:
+mv_hash_final_fallback	mv_cesa - Copy.c	/^static int mv_hash_final_fallback(struct ahash_request *req)$/;"	f	file:
+mv_hash_finup	mv_cesa - Copy.c	/^static int mv_hash_finup(struct ahash_request *req)$/;"	f	file:
+mv_hash_import_sha1_ctx	mv_cesa - Copy.c	/^static inline int mv_hash_import_sha1_ctx(const struct mv_req_hash_ctx *ctx,$/;"	f	file:
+mv_hash_init	mv_cesa - Copy.c	/^static int mv_hash_init(struct ahash_request *req)$/;"	f	file:
+mv_hash_init_ivs	mv_cesa - Copy.c	/^static void mv_hash_init_ivs(struct mv_tfm_hash_ctx *ctx, const void *istate,$/;"	f	file:
+mv_hash_setkey	mv_cesa - Copy.c	/^static int mv_hash_setkey(struct crypto_ahash *tfm, const u8 * key,$/;"	f	file:
+mv_hash_update	mv_cesa - Copy.c	/^static int mv_hash_update(struct ahash_request *req)$/;"	f	file:
+mv_hmac_sha1_alg	mv_cesa - Copy.c	/^struct ahash_alg mv_hmac_sha1_alg = {$/;"	v	typeref:struct:ahash_alg
+mv_init_hash_req_ctx	mv_cesa - Copy.c	/^static void mv_init_hash_req_ctx(struct mv_req_hash_ctx *ctx, int op,$/;"	f	file:
+mv_probe	mv_cesa - Copy.c	/^static int mv_probe(struct platform_device *pdev)$/;"	f	file:
+mv_process_current_q	mv_cesa - Copy.c	/^static void mv_process_current_q(int first_block)$/;"	f	file:
+mv_process_hash_current	mv_cesa - Copy.c	/^static void mv_process_hash_current(int first_block)$/;"	f	file:
+mv_remove	mv_cesa - Copy.c	/^static int mv_remove(struct platform_device *pdev)$/;"	f	file:
+mv_req_ctx	mv_cesa - Copy.c	/^struct mv_req_ctx {$/;"	s	file:
+mv_req_ctx	mv_cesa.c	/^struct mv_req_ctx {$/;"	s	file:
+mv_req_hash_ctx	mv_cesa - Copy.c	/^struct mv_req_hash_ctx {$/;"	s	file:
+mv_setkey_aes	mv_cesa - Copy.c	/^static int mv_setkey_aes(struct crypto_ablkcipher *cipher, const u8 *key,$/;"	f	file:
+mv_setkey_aes	mv_cesa.c	/^static int mv_setkey_aes(struct crypto_ablkcipher *cipher, const u8 *key,$/;"	f	file:
+mv_sha1_alg	mv_cesa - Copy.c	/^struct ahash_alg mv_sha1_alg = {$/;"	v	typeref:struct:ahash_alg
+mv_start_new_crypt_req	mv_cesa - Copy.c	/^static void mv_start_new_crypt_req(struct ablkcipher_request *req)$/;"	f	file:
+mv_start_new_crypt_req	mv_cesa.c	/^static void mv_start_new_crypt_req(void)$/;"	f	file:
+mv_start_new_hash_req	mv_cesa - Copy.c	/^static void mv_start_new_hash_req(struct ahash_request *req)$/;"	f	file:
+mv_tfm_hash_ctx	mv_cesa - Copy.c	/^struct mv_tfm_hash_ctx {$/;"	s	file:
+mv_update_hash_req_ctx	mv_cesa - Copy.c	/^static void mv_update_hash_req_ctx(struct mv_req_hash_ctx *ctx, int is_last,$/;"	f	file:
+need_calc_aes_dkey	mv_cesa - Copy.c	/^	u32 need_calc_aes_dkey;$/;"	m	struct:mv_ctx	file:
+need_calc_aes_dkey	mv_cesa.c	/^	u32 need_calc_aes_dkey;$/;"	m	struct:mv_ctx	file:
+numOfTask	mv_cesa.c	/^int numOfTask=0;$/;"	v
+op	mv_cesa - Copy.c	/^	enum crypto_op op;$/;"	m	struct:mv_req_ctx	typeref:enum:mv_req_ctx::crypto_op	file:
+op	mv_cesa - Copy.c	/^	enum hash_op op;$/;"	m	struct:mv_req_hash_ctx	typeref:enum:mv_req_hash_ctx::hash_op	file:
+op	mv_cesa - Copy.c	/^	enum hash_op op;$/;"	m	struct:mv_tfm_hash_ctx	typeref:enum:mv_tfm_hash_ctx::hash_op	file:
+op	mv_cesa.c	/^	enum crypto_op op;$/;"	m	struct:mv_req_ctx	typeref:enum:mv_req_ctx::crypto_op	file:
+p	mv_cesa - Copy.c	/^	struct req_progress p;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::req_progress	file:
+p	mv_cesa.c	/^	struct req_progress p;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::req_progress	file:
+process	mv_cesa - Copy.c	/^	void (*process) (int is_first);$/;"	m	struct:req_progress	file:
+process	mv_cesa.c	/^	void (*process) (int is_first);$/;"	m	struct:req_progress	file:
+queue	mv_cesa - Copy.c	/^	struct crypto_queue queue;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::crypto_queue	file:
+queue	mv_cesa.c	/^	struct crypto_queue queue;\/\/cpg own the queue$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::crypto_queue	file:
+queue_manag	mv_cesa - Copy.c	/^static int queue_manag(void *data)$/;"	f	file:
+queue_manag	mv_cesa.c	/^static int queue_manag(void *data)$/;"	f	file:
+queue_th	mv_cesa - Copy.c	/^	struct task_struct *queue_th;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::task_struct	file:
+queue_th	mv_cesa.c	/^	struct task_struct *queue_th;$/;"	m	struct:crypto_priv	typeref:struct:crypto_priv::task_struct	file:
+rco_tab	aes_generic.c	/^static const u32 rco_tab[10] = { 1, 2, 4, 8, 16, 32, 64, 128, 27, 54 };$/;"	v	file:
+rd_buf	mv_cesa.c	/^static unsigned char *wr_buf = NULL, *rd_buf = NULL, *unaligned_buf = NULL;$/;"	v	file:
+rd_hw_addr	mv_cesa.c	/^static dma_addr_t rd_hw_addr, wr_hw_addr;$/;"	v	file:
+reg	mv_cesa - Copy.c	/^	void __iomem *reg;$/;"	m	struct:crypto_priv	file:
+reg	mv_cesa.c	/^	void __iomem *reg;$/;"	m	struct:crypto_priv	file:
+req_progress	mv_cesa - Copy.c	/^struct req_progress {$/;"	s	file:
+req_progress	mv_cesa.c	/^struct req_progress {$/;"	s	file:
+request_collector	mv_cesa.c	/^struct crypto_async_request *request_collector[10];$/;"	v	typeref:struct:crypto_async_request
+sPointer	mv_cesa.c	/^unsigned char *sPointer;$/;"	v
+sec_accel_config	mv_cesa.h	/^struct sec_accel_config {$/;"	s
+setup_data_in	mv_cesa - Copy.c	/^static void setup_data_in(void)$/;"	f	file:
+setup_data_in	mv_cesa.c	/^static void setup_data_in(void)\/\/put in all or 4k data of request into source buffer$/;"	f	file:
+sg_dst_left	mv_cesa - Copy.c	/^	int sg_dst_left;$/;"	m	struct:req_progress	file:
+sg_dst_left	mv_cesa.c	/^	int sg_dst_left;$/;"	m	struct:req_progress	file:
+sg_src_left	mv_cesa - Copy.c	/^	int sg_src_left;$/;"	m	struct:req_progress	file:
+sg_src_left	mv_cesa.c	/^	int sg_src_left;$/;"	m	struct:req_progress	file:
+size	mv_cesa.c	/^	unsigned long size;$/;"	m	struct:dma_mem_struct	file:
+souceBuf	mv_cesa.c	/^unsigned char souceBuf[4096];$/;"	v
+sram	mv_cesa - Copy.c	/^	void __iomem *sram;$/;"	m	struct:crypto_priv	file:
+sram	mv_cesa.c	/^	void __iomem *sram;$/;"	m	struct:crypto_priv	file:
+sram_size	mv_cesa - Copy.c	/^	int sram_size;$/;"	m	struct:crypto_priv	file:
+sram_size	mv_cesa.c	/^	int sram_size;$/;"	m	struct:crypto_priv	file:
+src_sg_it	mv_cesa - Copy.c	/^	struct sg_mapping_iter src_sg_it;$/;"	m	struct:req_progress	typeref:struct:req_progress::sg_mapping_iter	file:
+src_sg_it	mv_cesa.c	/^	struct sg_mapping_iter src_sg_it;$/;"	m	struct:req_progress	typeref:struct:req_progress::sg_mapping_iter	file:
+src_start	mv_cesa - Copy.c	/^	int src_start;$/;"	m	struct:req_progress	file:
+src_start	mv_cesa.c	/^	int src_start;$/;"	m	struct:req_progress	file:
+star_x	aes_generic.c	1128;"	d	file:
+stat_flags	mv_cesa.c	/^static unsigned long stat_flags = 0;$/;"	v	file:
+state	mv_cesa - Copy.c	/^	u32 state[SHA1_DIGEST_SIZE \/ 4];$/;"	m	struct:mv_req_hash_ctx	file:
+totalDataLength	mv_cesa.c	/^int totalDataLength=0;$/;"	v
+unaligned_buf	mv_cesa.c	/^static unsigned char *wr_buf = NULL, *rd_buf = NULL, *unaligned_buf = NULL;$/;"	v	file:
+wr_buf	mv_cesa.c	/^static unsigned char *wr_buf = NULL, *rd_buf = NULL, *unaligned_buf = NULL;$/;"	v	file:
+wr_hw_addr	mv_cesa.c	/^static dma_addr_t rd_hw_addr, wr_hw_addr;$/;"	v	file:

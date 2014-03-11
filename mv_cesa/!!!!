@@ -1,0 +1,783 @@
+#include "crypto/algapi.h"
+#include "linux/crypto.h"
+#include "linux/interrupt.h"
+#include "linux/io.h"
+#include "linux/kthread.h"
+#include "linux/platform_device.h"
+#include "linux/scatterlist.h"
+#include "linux/slab.h"
+#include "linux/module.h"
+#include "crypto/internal/hash.h"
+#include "crypto/sha.h"
+#include <linux/pci.h>
+#include "mv_cesa.h"
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/pci.h>
+#include <linux/pci_ids.h>
+#include <linux/crypto.h>
+#include <linux/spinlock.h>
+#include <crypto/algapi.h>
+#include <crypto/aes.h>
+#include <linux/time.h>
+#include <linux/io.h>
+#include <linux/delay.h>
+//#include "dsi-aes.h"
+#define MV_CESA	"MV-CESA:"
+#define MAX_HW_HASH_SIZE	0xFFFF
+#define DMA_REGISTER_SIZE         (4 * DREGCOUNT)    // There are eighteen registers, and each is 4 bytes wide.
+
+
+
+//#define DSI_DMA_ENABLE
+// #define DSI_AES_ALG_ENABLE
+#define DSI_AES_ECB_ENABLE
+// #define DSI_AES_CBC_ENABLE
+
+
+#define DSI_HW_CRYPT_VENDOR_ID		0x10EE
+#define DSI_HW_CRYPT_DEVICE_ID		0x6018
+#define DSI_HW_CRYPT_SUBVENDOR_ID 	0x10EE
+#define DSI_HW_CRYPT_SUBDEVICE_ID 	0x0007
+
+#define HAVE_REGION 0x01                    // I/O Memory region
+#define HAVE_IRQ    0x02                    // Interupt
+#define HAVE_KREG   0x04                    // Kernel registration
+
+#define BUF_SIZE		4096
+
+#define DMA_WRITE_START		0x00000001	
+#define DMA_WR_RELAX_ORDER	0x00000020
+#define DMA_WR_NO_SNOOP		0x00000040
+#define DMA_WINTR_DISABLE 	0x00000080
+#define DMA_WRITE_DONE		0x00000100
+
+#define DMA_READ_START 		0x00010000
+#define DMA_RD_RELAX_ORDER	0x00200000
+#define DMA_RD_NO_SNOOP		0x00400000
+#define DMA_RINTR_DISABLE	0x00800000
+#define DMA_READ_DONE		0x01000000
+#define maxOfCollector 30
+/* Static structures */
+enum {
+	DSCR,		/* Device control/status register */
+	DDMACR,		/* DMA control register */
+	WDMATLPA,	/* address of destination data buffer (device perspective) */
+	WDMATLPS,
+	WDMATLPC,
+	WDMATLPP,
+	RDMATLPP,
+	RDMATLPA,	/* address of source data buffer (device perspective) */
+	RDMATLPS,
+	RDMATLPC,
+	WDMAPERF,
+	RDMAPERF,
+	RDMASTAT,
+	NRDCOMP,
+	RCOMPDSIZW,
+	DLWSTAT,
+	DLTRSSTAT,
+	DMISCCONT,
+	
+	AESLENCR,	/* AES length & control register; BIT31 1=encrypt, 0=decrypt; BIT0-15 number of bytes to encrypt */
+	AESKEY0_0,	/* AES key MSW */
+	AESKEY0_1,
+	AESKEY0_2,
+	AESKEY0_3,	/* AES key LSW */
+
+	DREGCOUNT
+};
+typedef struct
+dma_mem_struct
+{
+	unsigned long addr;
+	unsigned long size;
+	void __iomem  *map;
+}	dma_mem_t;
+static spinlock_t lock;
+static dma_mem_t dsi_aes_dma;
+static unsigned long stat_flags = 0;
+static unsigned char *wr_buf = NULL, *rd_buf = NULL, *unaligned_buf = NULL;
+static dma_addr_t rd_hw_addr, wr_hw_addr;
+int Datasize=0;
+static void mv_start_new_crypt_req(void);
+static void dequeue_complete_req(int i);
+static void DataPrepare(int i);
+static void do_crypt(void *src, void *dst, int len, u32 flags);//one char by char
+
+unsigned char sourceBuf[4096];
+unsigned char destBuf[4096];
+unsigned char *sPointer;
+unsigned char *dPointer;
+int dataSize[maxOfCollector];
+int counter[maxOfCollector];
+int dcounter[maxOfCollector];
+int numOfTask[maxOfCollector];
+int forceProcess=0;
+int IFlag_newCrypt=0;
+int firstFlag=0;
+int indexOfCollector=0;
+struct crypto_async_request *request_collector[maxOfCollector][10];
+int crypto_aes_expand_key_generic(struct crypto_aes_ctx *ctx, const u8 *in_key,
+		unsigned int key_len);
+int crypto_aes_set_key_generic(const u8 *in_key,
+		unsigned int key_len);
+void aes_encrypt_generic(u8 *out, const u8 *in);
+void aes_decrypt_generic(u8 *out, const u8 *in);
+/*
+ * STM:
+ *   /-----------------------------------------------------\
+ *   |			|-----------|					  			| 
+ *  \./			\./		 	|					 			|
+ * IDLE -> new request->collect 8 -> BUSY -> done -> DEQUEUE  request complete
+ *			   
+ *			    
+ */
+enum engine_status {
+	ENGINE_IDLE,
+	ENGINE_BUSY,
+	ENGINE_W_DEQUEUE,
+};
+
+/**
+ * struct req_progress - used for every crypt request
+ * @src_sg_it:		sg iterator for src
+ * @dst_sg_it:		sg iterator for dst
+ * @sg_src_left:	bytes left in src to process (scatter list)
+ * @src_start:		offset to add to src start position (scatter list)
+ * @crypt_len:		length of current hw crypt/hash process
+ * @hw_nbytes:		total bytes to process in hw for this request
+ * @copy_back:		whether to copy data back (crypt) or not (hash)
+ * @sg_dst_left:	bytes left dst to process in this scatter list
+ * @dst_start:		ofset to add to dst start position (scatter list)
+ * @hw_processed_bytes:	number of bytes processed by hw (request).
+ *
+ * sg helper are used to iterate over the scatterlist. Since the size of the
+ * SRAM may be less than the scatter size, this struct is used to keep
+ * track of progress within current scatterlist.
+ */
+struct req_progress {
+	struct sg_mapping_iter src_sg_it;
+	struct sg_mapping_iter dst_sg_it;
+	void (*complete) (void);
+	void (*process) (int is_first);
+
+	/* src mostly */
+	int sg_src_left;
+	int src_start;
+	int crypt_len;
+	int hw_nbytes;//total bytes to process in hw for this request
+	/* dst mostly */
+	int copy_back;
+	int sg_dst_left;
+	int dst_start;
+	int hw_processed_bytes;//number of bytes processed by hw (request).
+	//I am assume the hardware will finish hw_nbytes everytime 
+	//instead of finish it in multiple cycle.
+	// which is a wrong assumtion.
+};
+
+struct crypto_priv {
+	void __iomem *reg;
+	void __iomem *sram;
+	int irq;
+	struct task_struct *queue_th;
+	struct task_struct *interrupt_th;
+	/* the lock protects queue and eng_st */
+	spinlock_t lock;
+	struct crypto_queue queue;//cpg own the queue
+	enum engine_status eng_st;
+	struct crypto_async_request *cur_req;//the cur_req is not being used.
+	struct req_progress p;
+	int max_req_size;
+	int sram_size;
+	int has_sha1;
+	int has_hmac_sha1;
+};
+
+static struct crypto_priv *cpg;
+
+struct mv_ctx {
+	u8 aes_enc_key[AES_KEY_LEN];
+	u32 aes_dec_key[8];
+	int key_len;
+	u32 need_calc_aes_dkey;
+};
+
+enum crypto_op {
+	COP_AES_ECB,
+	//COP_AES_CBC,
+};
+
+struct mv_req_ctx {
+	enum crypto_op op;
+	int decrypt;
+};
+struct timespec start, end;
+struct timespec switch_start, switch_end;
+static inline void
+_writefield(u32 offset, void *value)
+{
+#if 1 
+	int i;
+	for (i = 0; i < 4; i++)
+		iowrite32(((u32 *) value)[i], dsi_aes_dma.map + offset + (i * 4));
+#endif
+}
+
+/* Read a 128 bit field (either a writable key or IV) */
+static inline void
+_readfield(u32 offset, void *value)
+{
+#if 1
+	int i;
+	for (i = 0; i < 4; i++)
+		((u32 *) value)[i] = ioread32(dsi_aes_dma.map + offset + (i * 4));
+#endif
+}
+
+static int interrupt_manag(void *data)
+{
+	struct crypto_queue *queue=&cpg->queue;
+	//printk(KERN_INFO "First time in interrupt manager");
+	do{
+		__set_current_state(TASK_INTERRUPTIBLE);
+		//printk(KERN_INFO "interrupt manager running");
+			// __set_current_state(TASK_RUNNING);
+		if(IFlag_newCrypt){
+			int i;
+			for(i=0;i<indexOfCollector;i++){//if indexOfCollector is 8:running in 0------7
+			//printk(KERN_INFO "start data prepare");
+			//getnstimeofday(&start);
+			//printk(KERN_INFO "indexOfCollector is %d",i);
+			DataPrepare(i);
+			//getnstimeofday(&end);
+			//long difference = end.tv_nsec - start.tv_nsec;
+			//printk ("%ld in DataPrepare \n", difference);
+			//printk(KERN_INFO "finish data prepare, start do_crypt data size is %d, operation is %d",dataSize[i],firstFlag);
+			//getnstimeofday(&start);
+			do_crypt(sourceBuf, destBuf, dataSize[i], firstFlag);
+			//printk(KERN_INFO "finish do_crypt for indexofcollector :%d",i);
+			//getnstimeofday(&end);
+			//difference = end.tv_nsec - start.tv_nsec;
+			//printk ("%ld in do_crypt \n", difference);
+			//printk(KERN_INFO "PROCESSDONE");
+			//printk(KERN_INFO "deque_comple being called!");	
+			//getnstimeofday(&start);
+			dequeue_complete_req(i);
+			//getnstimeofday(&end);
+	     		//long difference = end.tv_nsec - start.tv_nsec;
+			//printk ("%ld for dequeue_complete_req is %d \n", difference,cpg->eng_st);
+			dataSize[i]=0;
+			}
+			cpg->eng_st = ENGINE_IDLE;
+			IFlag_newCrypt=0;
+			Datasize=0;
+			indexOfCollector=0;
+		}
+		if(queue->qlen){
+		//getnstimeofday(&switch_start);
+		//printk(KERN_INFO "more request in the queue wake up queue size is %d \n ",queue->qlen);
+		wake_up_process(cpg->queue_th);
+		}
+		schedule();
+		//getnstimeofday(&switch_end);
+	   	//long difference = switch_end.tv_nsec - switch_start.tv_nsec;
+		//printk ("%ld in switching from Q to I \n", difference);
+	} while (!kthread_should_stop());
+	//printk(KERN_INFO "Exiting interrupt Manager.");
+	return 0;
+}
+
+static int queue_manag(void *data)
+{
+	struct crypto_async_request *async_req = NULL;
+	struct crypto_async_request *backlog = NULL;
+	struct crypto_queue *queue=&cpg->queue;
+	struct ablkcipher_request *req= NULL;
+	struct mv_req_ctx *req_ctx=NULL;
+	sPointer=sourceBuf;
+	dPointer=destBuf;
+	cpg->eng_st = ENGINE_IDLE;
+	//numOfTask[indexOfCollector] = 0;
+//	printk(KERN_INFO "First time in queue manager");
+	do {		
+		__set_current_state(TASK_INTERRUPTIBLE);
+		spin_lock_irq(&cpg->lock);
+		//getnstimeofday(&start);
+		if (cpg->eng_st == ENGINE_IDLE) {
+			backlog = crypto_get_backlog(&cpg->queue);
+			async_req = crypto_dequeue_request(&cpg->queue);			
+			//printk(KERN_INFO "indexOfCollector is %d",indexOfCollector);
+			//printk(KERN_INFO "numOfTask is %d and queue size is %d async_req is %p forceProcess is %d",numOfTask[indexOfCollector],queue->qlen,async_req,forceProcess);
+			if (async_req) {			
+				req= ablkcipher_request_cast(async_req);	
+				req_ctx= ablkcipher_request_ctx(req);	
+				BUG_ON(cpg->eng_st != ENGINE_IDLE);
+				Datasize += req->nbytes;
+				dataSize[indexOfCollector]+=req->nbytes;
+				//printk(KERN_INFO "data size is %d",Datasize);
+				request_collector[indexOfCollector][numOfTask[indexOfCollector]]=async_req;/*address in async_req copied into request_collector[numOfTask] */
+				if(numOfTask[0]==0) {
+					firstFlag=req_ctx->decrypt;
+				}
+				numOfTask[indexOfCollector]++;	
+				if(numOfTask[indexOfCollector]==8){
+				indexOfCollector++;
+				}
+				if(Datasize >= 4096*maxOfCollector || req_ctx->decrypt != firstFlag){//operation change
+					forceProcess=1;
+					cpg->eng_st = ENGINE_BUSY;//or task is 8 already will not ask dequeue anymore.
+					if(Datasize > 4096*maxOfCollector || req_ctx->decrypt != firstFlag){
+						numOfTask[indexOfCollector]--;//need to temp store the last one.
+						if(Datasize>4096*maxOfCollector)
+						printk(KERN_WARNING "data size exceed limit");
+						else
+						printk(KERN_WARNING "Operation change");
+						//msleep(10000);
+					}
+				}
+			}
+			else //async_req is null
+			{//no more request
+				//printk(KERN_INFO "no more request");
+				if(numOfTask[0]>0){//if currently does have tasks.
+					cpg->eng_st = ENGINE_BUSY;
+					forceProcess=1;
+					if(numOfTask[indexOfCollector]!=0)
+					indexOfCollector++;
+				}
+				//else just do nothing.
+			}
+		}
+		spin_unlock_irq(&cpg->lock);
+		//getnstimeofday(&end);
+	     	//long difference = end.tv_nsec - start.tv_nsec;
+		//printk ("%ld for getting one request engstate is %d \n", difference,cpg->eng_st);
+		if (backlog) {
+			backlog->complete(backlog, -EINPROGRESS);
+			backlog = NULL;
+		}
+		if(forceProcess)
+		{	
+			//printk(KERN_INFO "start new crypt \n");
+			mv_start_new_crypt_req();
+			//printk(KERN_INFO "++++++queue man is going to sleep \n");
+			schedule();//during this time, higher layer will 
+			//getnstimeofday(&switch_end);
+			//long difference = switch_end.tv_nsec - switch_start.tv_nsec;
+			//printk ("!!!%ld in switch from I to Q \n", difference);
+
+			//try to max the queue again
+
+			//printk(KERN_WARNING "------Should not being called after +");
+			forceProcess=0;	
+		}
+		if(queue->qlen==0&&numOfTask[0]==0){
+			//printk(KERN_INFO "nothing to handle sleep");
+			schedule();//no more request to process
+			//msleep(1000);
+		}
+	} while (!kthread_should_stop());
+	//printk(KERN_INFO "Exiting Queue Manager.");
+	return 0;
+}
+
+static void mv_start_new_crypt_req(void)
+{
+	IFlag_newCrypt=1;
+	getnstimeofday(&switch_start);
+	//printk(KERN_WARNING "wake up interrupt manager \n");
+	wake_up_process(cpg->interrupt_th);
+}
+static void do_crypt(void *src, void *dst, int len, u32 flags)
+{
+	u8 *src_walk = (u8 *)src;
+	u8 *dst_walk = (u8 *)dst;
+	do {
+		if (!flags)
+			aes_encrypt_generic(dst_walk, src_walk);
+		else
+			aes_decrypt_generic(dst_walk, src_walk);
+		len -= AES_MIN_BLOCK_SIZE;
+		src_walk += AES_MIN_BLOCK_SIZE;
+		dst_walk += AES_MIN_BLOCK_SIZE;
+	} while (len);
+}
+
+static int count_sgs(struct scatterlist *sl, unsigned int total_bytes)
+{
+	int i = 0;
+	size_t cur_len;
+
+	while (sl) {
+		cur_len = sl[i].length;
+		++i;
+		if (total_bytes > cur_len)
+			total_bytes -= cur_len;
+		else
+			break;
+	}
+
+	return i;
+}
+int crypto_enqueue_request_user(struct crypto_queue *queue,
+                           struct crypto_async_request *request)
+{
+         int err = -EINPROGRESS;
+
+        if (unlikely(queue->qlen >= queue->max_qlen)) {
+                err = -EBUSY;
+                if (!(request->flags & CRYPTO_TFM_REQ_MAY_BACKLOG)){     
+			 goto out;
+		}
+                if (queue->backlog == &queue->list){
+		        queue->backlog = &request->list;
+		}
+       }
+        queue->qlen++;
+        list_add_tail(&request->list, &queue->list);
+ out:
+         return err;
+}
+static int mv_handle_req(struct crypto_async_request *req)
+{
+	unsigned long flags;
+	int ret;
+	struct crypto_queue *queue=&cpg->queue;
+	spin_lock_irqsave(&cpg->lock, flags);
+	ret = crypto_enqueue_request_user(&cpg->queue, req);
+	spin_unlock_irqrestore(&cpg->lock, flags);
+	//printk(KERN_INFO "!!!!!!enqueue being called, queue size is %d \n",queue->qlen);
+	wake_up_process(cpg->queue_th);	
+	return ret;
+}
+static int mv_enc_aes_ecb(struct ablkcipher_request *req)
+{
+	struct mv_req_ctx *req_ctx = ablkcipher_request_ctx(req);
+	req_ctx->op = COP_AES_ECB;
+	req_ctx->decrypt = 0;
+	return mv_handle_req(&req->base);
+}
+static void compute_aes_dec_key(struct mv_ctx *ctx)
+{
+	struct crypto_aes_ctx gen_aes_key;
+	int key_pos;
+
+	if (!ctx->need_calc_aes_dkey)
+		return;
+
+	crypto_aes_expand_key(&gen_aes_key, ctx->aes_enc_key, ctx->key_len);
+
+	key_pos = ctx->key_len + 24;
+	memcpy(ctx->aes_dec_key, &gen_aes_key.key_enc[key_pos], 4 * 4);
+	switch (ctx->key_len) {
+	case AES_KEYSIZE_256:
+		key_pos -= 2;
+		/* fall */
+	case AES_KEYSIZE_192:
+		key_pos -= 2;
+		memcpy(&ctx->aes_dec_key[4], &gen_aes_key.key_enc[key_pos],
+				4 * 4);
+		break;
+	}
+	ctx->need_calc_aes_dkey = 0;
+}
+static int mv_dec_aes_ecb(struct ablkcipher_request *req)
+{
+	struct mv_ctx *ctx = crypto_tfm_ctx(req->base.tfm);
+	struct mv_req_ctx *req_ctx = ablkcipher_request_ctx(req);
+	struct crypto_queue *queue=&cpg->queue;
+
+	//printk(KERN_INFO "dec aes ecb method being called");
+	req_ctx->op = COP_AES_ECB;
+	req_ctx->decrypt = 1;
+	compute_aes_dec_key(ctx);
+	//printk(KERN_INFO "dec aes ecb method being alled:The size of queue is %d",queue->qlen);
+	return mv_handle_req(&req->base);
+}
+static void mv_crypto_algo_completion(void)
+{
+	sg_miter_stop(&cpg->p.src_sg_it);
+	sg_miter_stop(&cpg->p.dst_sg_it);
+}
+
+static inline void copy_src_to_buf(struct req_progress *p, char *dbuf, int len)
+{//from p to dbuf.
+	int ret;
+	void *sbuf;
+	int copy_len;
+	
+	//printk(KERN_WARNING "entering copy_src_to_buf");
+	while (len) 
+	{
+		if (!p->sg_src_left) 
+		{
+			ret = sg_miter_next(&p->src_sg_it);
+			BUG_ON(!ret);
+			p->sg_src_left = p->src_sg_it.length;
+			p->src_start = 0;
+		}
+
+		sbuf = p->src_sg_it.addr + p->src_start;
+
+		copy_len = min(p->sg_src_left, len);
+		memcpy(dbuf, sbuf, copy_len);
+
+		p->src_start += copy_len;
+		p->sg_src_left -= copy_len;
+
+		len -= copy_len;
+		dbuf += copy_len;
+	}
+}
+
+static inline void setup_data_in(void)//put in all or 512 b data of request into source buffer
+{
+	struct req_progress *p = &cpg->p;
+	//printk(KERN_INFO "inside setup_data_in before copy_src_to_buf sPointer is %p, hw_nbytes is %d",sPointer,p->hw_nbytes);
+	copy_src_to_buf(p,sPointer,p->hw_nbytes);//put length of 
+	sPointer += p->hw_nbytes;
+}
+
+static inline void DataPrepare(int i)
+{
+/*
+*main function:prepare source buffer
+*1.prepare reg_progress for each request.
+*2.maintain the total data size for this time process
+*as well as data size for each request.
+*3.copy source from reg_progress into souceBuf.
+****************************************/
+	//memset(sourceBuf,0,4096);
+	//memset(destBuf,0,4096);
+	sPointer=sourceBuf;
+	dPointer=destBuf;
+	//printk(KERN_INFO "enter data prepare sPointer is %p dPointer is %p",sPointer,dPointer);
+	struct req_progress *p = &cpg->p;
+	//int temp=1000;
+	//while(temp>0){
+	//msleep(1000);
+	//temp--;	
+	//} the system correctly go here	
+	while(numOfTask[i] >0)
+	{
+		//printk(KERN_INFO "numOfTask for indexOfCollector %d is %d \n",i,numOfTask[i]);
+		struct ablkcipher_request *req =
+						ablkcipher_request_cast(request_collector[i][counter[i]]);
+		//printk(KERN_INFO "ablkcipher_request %X", req);	
+		int num_sgs;
+
+		//cpg->cur_req = &req->base;
+		memset(p, 0, sizeof(struct req_progress));//initial p to 0
+		/* void *memset(void *s, int c, size_t n);
+		   The memset() function fills the first n bytes of the memory area pointed to by
+		   s with the constant byte c.*/
+		p->hw_nbytes = req->nbytes;//
+		p->complete = mv_crypto_algo_completion;//static void mv_crypto_algo_completion(void)
+		//p->process = mv_process_current_q;
+		p->copy_back = 1;
+
+		num_sgs = count_sgs(req->src, req->nbytes);
+		//printk(KERN_WARNING "src_s_it's num_sgs is: %d",num_sgs);
+		sg_miter_start(&p->src_sg_it, req->src, num_sgs, SG_MITER_FROM_SG);
+		//Starts mapping iterator src_sg_it
+		//put resource from request into reg_progress???
+
+		counter[i]++;
+		numOfTask[i]--;
+		setup_data_in();//it will be called 8 times idealy	
+	}
+	//printk(KERN_INFO "Exit data prepare method");
+}
+static inline void copy_buf_to_dst(struct req_progress *p, char *sbuf, int len)
+{
+		int offset = 0;
+		int dst_copy;
+		int ret;
+		void *buf;	
+		do {
+			if (!cpg->p.sg_dst_left) {
+				ret = sg_miter_next(&cpg->p.dst_sg_it);
+				BUG_ON(!ret);
+				cpg->p.sg_dst_left = cpg->p.dst_sg_it.length;
+				cpg->p.dst_start = 0;
+			}
+
+			buf = cpg->p.dst_sg_it.addr;
+			buf += cpg->p.dst_start;
+
+			dst_copy = min(len, cpg->p.sg_dst_left);
+
+			memcpy(buf,
+			       sbuf + offset,
+			       dst_copy);
+			offset += dst_copy;
+			cpg->p.sg_dst_left -= dst_copy;
+			len -= dst_copy;
+			cpg->p.dst_start += dst_copy;
+		} while (len > 0);
+}
+
+static inline void get_data_out(void)
+{
+	struct req_progress *p = &cpg->p;
+	int numPointer=dPointer-destBuf;
+	int size=min(512,4096-numPointer);
+	copy_buf_to_dst(p,dPointer,size);
+	dPointer+=size;
+}
+static inline void dequeue_complete_req(int i)
+{
+	dcounter[i]=0;
+	int num_sgs;
+	struct req_progress *p = &cpg->p;
+	int ret;
+	while(counter[i] > 0) {
+		struct ablkcipher_request *req =
+						ablkcipher_request_cast(request_collector[i][dcounter[i]]);
+		struct crypto_async_request *asreq=request_collector[i][dcounter[i]];
+		num_sgs = count_sgs(req->dst, req->nbytes);
+		sg_miter_start(&p->dst_sg_it, req->dst, num_sgs, SG_MITER_TO_SG);
+		if (cpg->p.copy_back){
+			get_data_out();
+		}
+		counter[i]--;
+		dcounter[i]++;	
+		local_bh_disable();
+		asreq->complete(asreq, 0);
+		local_bh_enable();				
+		cpg->p.complete();
+	}	
+}
+static int mv_cra_init(struct crypto_tfm *tfm)
+{
+	tfm->crt_ablkcipher.reqsize = sizeof(struct mv_req_ctx);
+	return 0;
+}
+/* CRYPTO-API Functions */
+//notes, the API function input paramater has small difference with dsi aes
+static int mv_setkey_aes(struct crypto_ablkcipher *cipher, const u8 *key,
+		unsigned int len)
+{
+	struct crypto_tfm *tfm = crypto_ablkcipher_tfm(cipher);
+	struct mv_ctx *ctx = crypto_tfm_ctx(tfm);
+	ctx->key_len = len;
+	ctx->need_calc_aes_dkey = 1;
+	//printk(KERN_WARNING "dsi_setkey_blk: setting key, len = %d.", len);
+	crypto_aes_set_key_generic(key, len);
+//	printk(KERN_INFO "crypto set key being called");
+	memcpy(ctx->aes_enc_key, key, AES_KEY_LEN);
+	return 0;
+	
+}
+struct crypto_alg mv_aes_alg_ecb = {
+	.cra_name		= "ecb(aes)",
+	.cra_driver_name	= "mv-ecb-aes",
+	.cra_priority	= 300,
+	.cra_flags	= CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC,
+	.cra_blocksize	= 16,
+	.cra_ctxsize	= sizeof(struct mv_ctx),
+	.cra_alignmask	= 0,
+	.cra_type	= &crypto_ablkcipher_type,
+	.cra_module	= THIS_MODULE,
+	.cra_init	= mv_cra_init,
+	.cra_u		= {
+		.ablkcipher = {
+			.min_keysize	=	AES_MIN_KEY_SIZE,
+			.max_keysize	=	AES_MAX_KEY_SIZE,
+			.setkey		=	mv_setkey_aes,
+			.encrypt	=	mv_enc_aes_ecb,
+			.decrypt	=	mv_dec_aes_ecb,
+		},
+	},
+};
+
+static int __devinit
+dsi_aes_probe(struct pci_dev *dev, const struct pci_device_id *id)
+{
+}
+
+static void __devexit dsi_aes_remove(struct pci_dev *dev)
+{
+	crypto_unregister_alg(&mv_aes_alg_ecb);
+	if (stat_flags & HAVE_REGION)
+		release_mem_region(dsi_aes_dma.addr, DMA_REGISTER_SIZE);
+	iounmap(dsi_aes_dma.map);
+	dsi_aes_dma.map = NULL;
+
+	pci_release_regions(dev);
+	pci_disable_device(dev);
+}
+static struct pci_device_id 
+dsi_aes_tbl[] = 
+{
+	{
+		.vendor	=	DSI_HW_CRYPT_VENDOR_ID,
+		.device	=	DSI_HW_CRYPT_DEVICE_ID,
+		.subvendor =	DSI_HW_CRYPT_SUBVENDOR_ID,
+		.subdevice =	DSI_HW_CRYPT_SUBDEVICE_ID,
+	},
+	{0, }
+};
+static struct pci_driver dsi_aes_driver = {
+	.name = "DSI AES Driver",
+	.id_table = dsi_aes_tbl,
+	.probe = dsi_aes_probe,
+	.remove = __devexit_p(dsi_aes_remove)
+};
+
+MODULE_ALIAS("platform:mv_crypto");
+
+static int __init dsi_crypto_init(void)
+{
+	//return pci_register_driver(&dsi_aes_driver);
+int ret;
+
+#ifdef DSI_AES_ECB_ENABLE
+        printk(KERN_WARNING "dsi-aes: registering dsi_ecb_alg.\n");
+        ret = crypto_register_alg(&mv_aes_alg_ecb);
+        if (ret)
+                goto ealg;
+#endif
+        printk(KERN_WARNING "dsi-aes: DSI AES engine enabled.\n");
+		cpg = kzalloc(sizeof(struct crypto_priv), GFP_KERNEL);
+		if (!cpg)
+			return -ENOMEM;
+		spin_lock_init(&cpg->lock);
+		crypto_init_queue(&cpg->queue,50);
+		//printk(KERN_WARNING "queue initialized\n");
+		cpg->queue_th = kthread_run(queue_manag, cpg, "mv_crypto");
+		//printk(KERN_WARNING "queue manager started\n");
+		cpg->interrupt_th = kthread_run(interrupt_manag, cpg, "mv_crypto");
+		//printk(KERN_WARNING "interrupt manager started\n");
+		        return 0;
+ eecb:
+#ifdef DSI_AES_ECB_ENABLE
+        crypto_unregister_alg(&mv_aes_alg_ecb);
+#endif
+ ealg:
+#ifdef DSI_AES_ALG_ENABLE
+       // crypto_unregister_alg(&dsi_alg);
+#endif
+ eexit:
+        printk(KERN_WARNING "dsi-aes: DSI AES loading failed.\n");
+}
+module_init(dsi_crypto_init);
+
+static void __exit dsi_crypto_exit(void)
+{
+	//pci_unregister_driver(&dsi_aes_driver);
+#ifdef DSI_AES_ECB_ENABLE
+        crypto_unregister_alg(&mv_aes_alg_ecb);
+        //printk(KERN_WARNING "dsi-aes: DSI AES engine disabled.\n");
+#endif
+		kthread_stop(cpg->queue_th);
+		kthread_stop(cpg->interrupt_th);
+}
+
+module_exit(dsi_crypto_exit);
+
+MODULE_AUTHOR("Sebastian Andrzej Siewior <sebastian@breakpoint.cc>");
+MODULE_DESCRIPTION("Support for Marvell's cryptographic engine");
+MODULE_LICENSE("GPL");
